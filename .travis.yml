@@ -1,0 +1,26 @@
+language: c
+dist: trusty
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y --no-install-recommends libc6:i386
+install:
+  - wget http://tigcc.ticalc.org/linux/tigcc_bin.tar.bz2
+  - mkdir tigcc
+  - cd tigcc/
+  - tar -xjf ../tigcc_bin.tar.bz2
+  - export PATH=$PATH:$PWD/bin/
+  - export TIGCC=$PWD
+  - cd ../
+script:
+  - mkdir _build
+  - tigcc -O2 -o _build/hello hello.c
+deploy:
+  provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
+  file:
+    - "_build/hello.89z"
+    - "_build/hello.9xz"
+    - "_build/hello.v2z"
+  skip_cleanup: true
+  on:
+    tags: true
